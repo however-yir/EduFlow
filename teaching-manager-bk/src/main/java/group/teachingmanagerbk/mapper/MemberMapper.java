@@ -61,7 +61,9 @@ public interface MemberMapper {
     int getStudentCount(Student param);
 
     /* 根据条件查询学生信息（分页） */
-    @Select("select * from student where student_number " +
+    @Select("select student_id as studentId, student_number as studentNumber, name, " +
+            "student_class as studentClass, date_time as dateTime " +
+            "from student where student_number " +
             "like concat('%',#{param.studentNumber},'%') " +
             "and name like concat('%',#{param.name},'%') " +
             "and student_class like concat('%',#{param.studentClass},'%') " +
@@ -76,7 +78,9 @@ public interface MemberMapper {
     void deleteStudentsInfo(String[] studentIds);
 
     /* 根据学生id查询相应的记录 */
-    @Select("select * from student where student_id = #{studentId}")
+    @Select("select student_id as studentId, student_number as studentNumber, name, " +
+            "student_class as studentClass, date_time as dateTime " +
+            "from student where student_id = #{studentId}")
     Student getStudentInfoById(String studentId);
 
     /* 根据学生id修改学生的信息 */
