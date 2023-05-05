@@ -1,5 +1,9 @@
 # EduFlow
 
+🔥 A Spring Boot teaching management backend based on MyBatis, MySQL, and JWT authentication.  
+🚀 Built for course management, member administration, enrollment workflows, and approval processes.  
+⭐ Supports login interception, course selection, withdrawal, auditing, and education data operations.
+
 > 面向教务场景的课程与成员管理系统后端项目，基于 Spring Boot + MyBatis + MySQL 实现，包含登录鉴权（JWT）、课程管理、选课流程与审核流程等核心能力。
 
 ## 1. 项目定位
