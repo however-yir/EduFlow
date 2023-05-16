@@ -1,0 +1,6 @@
+-- EduFlow bootstrap SQL placeholder.
+-- Keep this file as the single entry for local development bootstrap.
+-- TODO:
+-- 1) Create tables used by teaching-manager-bk.
+-- 2) Seed demo users/teachers/students/courses.
+-- 3) Add minimal role and course status lookup data.
