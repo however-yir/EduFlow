@@ -1,6 +1,8 @@
 package group.teachingmanagerbk.controller;
 
 import group.teachingmanagerbk.dto.application.CourseApplication;
+import group.teachingmanagerbk.security.RequirePermission;
+import group.teachingmanagerbk.security.RoleConstants;
 import group.teachingmanagerbk.service.CourseExaminationService;
 import group.teachingmanagerbk.utils.ReturnResult.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 @RestController
+@RequirePermission({RoleConstants.ROLE_ADMIN})
 public class CourseExaminationController {
 
     @Autowired
@@ -34,12 +37,8 @@ public class CourseExaminationController {
     //审批一条记录
     @PostMapping("/course/examination")
     public Result examineACourse(@RequestBody CourseApplication json) {
-        try {
-            courseExaminationService.examineACourse(json);
-            return new Result().success();
-        } catch (Exception e) {
-            return new Result().error(e.getMessage());
-        }
+        courseExaminationService.examineACourse(json);
+        return new Result().success();
     }
 
 }

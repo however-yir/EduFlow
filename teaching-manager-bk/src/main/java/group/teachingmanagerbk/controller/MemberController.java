@@ -2,6 +2,9 @@ package group.teachingmanagerbk.controller;
 
 import group.teachingmanagerbk.dto.member.QueryStudentParam;
 import group.teachingmanagerbk.dto.member.QueryTeacherParam;
+import group.teachingmanagerbk.exception.BusinessException;
+import group.teachingmanagerbk.security.RequirePermission;
+import group.teachingmanagerbk.security.RoleConstants;
 import group.teachingmanagerbk.service.MemberService;
 import group.teachingmanagerbk.utils.ReturnResult.Result;
 import group.teachingmanagerbk.utils.ReturnResult.ResultWithTotal;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @RestController
+@RequirePermission({RoleConstants.ROLE_ADMIN})
 public class MemberController {
 
     @Autowired
@@ -47,7 +51,7 @@ public class MemberController {
         if (memberService.insertTeacher(json)) {
             return new Result().success();
         }
-        return new Result().error("插入数据失败！");
+        throw new BusinessException(400, "插入教师数据失败！");
     }
 
     //根据id删除教师的信息
@@ -71,8 +75,8 @@ public class MemberController {
         log.info(teacher.toString());
         if (memberService.updateTeacherInfoById(teacher)) {
             return new Result().success();
-        };
-        return new Result().error("更新信息失败！");
+        }
+        throw new BusinessException(400, "更新教师信息失败！");
     }
 
     //获取学生信息
@@ -89,7 +93,7 @@ public class MemberController {
         if (memberService.insertStudent(json)) {
             return new Result().success();
         }
-        return new Result().error("插入数据失败！");
+        throw new BusinessException(400, "插入学生数据失败！");
     }
 
     //根据id删除学生的信息
@@ -113,8 +117,8 @@ public class MemberController {
         log.info(student.toString());
         if (memberService.updateStudentInfoById(student)) {
             return new Result().success();
-        };
-        return new Result().error("更新信息失败！");
+        }
+        throw new BusinessException(400, "更新学生信息失败！");
     }
 
 }

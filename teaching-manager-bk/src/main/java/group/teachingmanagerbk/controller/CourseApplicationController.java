@@ -1,6 +1,9 @@
 package group.teachingmanagerbk.controller;
 
 import group.teachingmanagerbk.dto.application.CourseApplication;
+import group.teachingmanagerbk.exception.BusinessException;
+import group.teachingmanagerbk.security.RequirePermission;
+import group.teachingmanagerbk.security.RoleConstants;
 import group.teachingmanagerbk.service.CourseApplicationService;
 import group.teachingmanagerbk.utils.ReturnResult.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @RestController
+@RequirePermission({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_TEACHER})
 public class CourseApplicationController {
 
     @Autowired
@@ -22,20 +26,19 @@ public class CourseApplicationController {
         if (courseApplicationService.applyANewCourse(json)) {
            return new Result().success();
         }
-        return new Result().error("申请新增失败，不存在这样的审批或者操作！");
+        throw new BusinessException(400, "申请新增失败，不存在这样的审批或者操作！");
     }
 
     //申请修改一门课程
     @PostMapping("/apply/modify/course")
     public Result applyModifyCourse(@RequestBody CourseApplication json) {
-
-        return new Result().error("申请修改失败，不存在这样的审批或操作！");
+        throw new BusinessException(400, "申请修改失败，不存在这样的审批或操作！");
     }
 
     //申请删除一门课程
     @PostMapping("/apply/deltele/course")
     public Result applyDeleteCourse(@RequestBody CourseApplication json) {
-        return new Result().error("申请删除失败， 不存在这样的审批或操作！");
+        throw new BusinessException(400, "申请删除失败，不存在这样的审批或操作！");
     }
 
     //根据id查询全部申请

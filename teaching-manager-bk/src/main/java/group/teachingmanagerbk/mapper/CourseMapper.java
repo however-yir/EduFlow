@@ -4,10 +4,7 @@ import group.teachingmanagerbk.dto.course.StudentSelectCourseData;
 import group.teachingmanagerbk.vo.course.Course;
 import group.teachingmanagerbk.vo.course.Place;
 import group.teachingmanagerbk.vo.member.Student;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 
@@ -34,6 +31,14 @@ public interface CourseMapper {
             "left join teacher t on c.teacher_id = t.teacher_id " +
             "where c.course_id = #{courseId}")
     Course getCourseInfoByCourseId(String courseId);
+
+    /* 课程行级锁，供悲观锁选课使用 */
+    @Select("select c.*, p.name as placeName, cs.name as courseStatusName, t.name as teacherName from course c " +
+            "left join place p on c.place_id = p.place_id " +
+            "left join course_status cs on cs.course_status_id = c.course_status_id " +
+            "left join teacher t on c.teacher_id = t.teacher_id " +
+            "where c.course_id = #{courseId} for update")
+    Course lockCourseById(String courseId);
 
     /* 根据条件查询出来的总数量 */
     int getCourseCountByCondition(Course param);
@@ -63,6 +68,15 @@ public interface CourseMapper {
             "values (#{courseId},#{studentId})")
     void insertCoursesStudents(StudentSelectCourseData data);
 
+    /* 悲观锁策略下递增已选人数 */
+    @Update("update course set current_students = current_students + 1 where course_id = #{courseId}")
+    void increaseCurrentStudentsPessimistic(String courseId);
+
+    /* 乐观锁策略下递增已选人数并推进版本号 */
+    @Update("update course set current_students = current_students + 1, version = version + 1 " +
+            "where course_id = #{courseId} and version = #{version} and current_students < max_students")
+    int increaseCurrentStudentsOptimistic(@Param("courseId") String courseId, @Param("version") Integer version);
+
     /* 根据课程id和学生id查询选课信息 */
     @Select("select courses_students_id as coursesStudentsId, course_id as courseId, " +
             "student_id as studentId, score " +
@@ -73,6 +87,11 @@ public interface CourseMapper {
     /* 根据课程id和学生id删除选课信息 */
     @Delete("delete from courses_students where course_id = #{courseId} and student_id = #{studentId} ")
     void deleteCoursesStudents(StudentSelectCourseData json);
+
+    /* 退课后回收已选人数 */
+    @Update("update course set current_students = case when current_students > 0 then current_students - 1 else 0 end " +
+            "where course_id = #{courseId}")
+    void decreaseCurrentStudents(String courseId);
 
     /* 根据学生id查询选课信息以及课程成绩 */
     @Select("select c.*, cs.score, p.name as placeName, " +

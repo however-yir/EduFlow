@@ -1,7 +1,10 @@
 package group.teachingmanagerbk.controller;
 
+import group.teachingmanagerbk.exception.BusinessException;
 import group.teachingmanagerbk.dto.login.LoginParam;
 import group.teachingmanagerbk.dto.login.ModifyPasswordParam;
+import group.teachingmanagerbk.security.RequirePermission;
+import group.teachingmanagerbk.security.RoleConstants;
 import group.teachingmanagerbk.service.LoginService;
 import group.teachingmanagerbk.utils.ReturnResult.Result;
 import group.teachingmanagerbk.vo.login.LoginData;
@@ -25,7 +28,7 @@ public class LoginController {
         // 1代表管理员，2代表学生，3代表教师
         LoginData data = loginService.login(json);
         if (data == null) {
-            return new Result().error("登录失败！");
+            throw new BusinessException(401, "登录失败！");
         }
         return new Result().success(data);
     }
@@ -43,6 +46,7 @@ public class LoginController {
 
     //更新用户密码
     @PostMapping("/modify/user/password")
+    @RequirePermission({RoleConstants.ROLE_ALL})
     public Result modifyUserPassword(@RequestBody ModifyPasswordParam json) {
         loginService.modifyUserPassword(json);
         return new Result().success();

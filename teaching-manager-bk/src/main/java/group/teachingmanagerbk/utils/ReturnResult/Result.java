@@ -34,5 +34,11 @@ public class Result {
         this.message = message;
         return this;
     }
-}
 
+    public Result error(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+        this.data = null;
+        return this;
+    }
+}

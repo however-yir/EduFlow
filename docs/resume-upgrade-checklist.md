@@ -12,9 +12,10 @@
 - [x] 新增 `.env.example`
 - [x] 新增 `docker-compose.dev.yml`（MySQL 开发环境）
 - [x] 新增 CI（GitHub Actions）
-- [ ] 统一异常处理（ControllerAdvice）
-- [ ] OpenAPI/Swagger
+- [x] 统一异常处理（ControllerAdvice）
+- [x] OpenAPI/Swagger
 - [ ] 操作审计日志
+- [x] Flyway 迁移脚本
 
 ## 3. README
 - [x] 项目定位强调教务流程系统
@@ -29,6 +30,7 @@
 - [ ] 退课流程测试
 - [ ] 审核流程测试
 - [ ] 成绩录入流程测试
+- [x] 选课并发锁策略（悲观锁/乐观锁）实现
 
 ## 5. 前端工程
 - [x] Vue3 + Vite 前端工程落地

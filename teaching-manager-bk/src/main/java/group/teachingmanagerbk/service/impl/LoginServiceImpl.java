@@ -3,6 +3,7 @@ package group.teachingmanagerbk.service.impl;
 import group.teachingmanagerbk.dto.login.LoginParam;
 import group.teachingmanagerbk.dto.login.ModifyPasswordParam;
 import group.teachingmanagerbk.mapper.LoginMapper;
+import group.teachingmanagerbk.security.RoleConstants;
 import group.teachingmanagerbk.service.LoginService;
 import group.teachingmanagerbk.utils.JwtUtil;
 import group.teachingmanagerbk.vo.login.LoginData;
@@ -61,6 +62,7 @@ public class LoginServiceImpl implements LoginService {
         //用jwt工具封装好token返回给前端
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", json.getAuthority());
+        claims.put("roleName", RoleConstants.fromLegacyCode(json.getAuthority()));
         claims.put("name", data.getName());
         claims.put("id",data.getId());
         String token = JwtUtil.genJWT(claims);

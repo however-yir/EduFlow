@@ -24,6 +24,6 @@ public interface CourseExaminationService {
      * 审批一条申请记录
      * @param json 申请记录
      */
-    void examineACourse(CourseApplication json) throws Exception;
+    void examineACourse(CourseApplication json);
 
 }

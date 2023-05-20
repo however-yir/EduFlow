@@ -1,32 +1,11 @@
--- EduFlow local bootstrap schema + demo data
--- Target: MySQL 8.x
+-- EduFlow baseline schema (for Flyway)
 
-SET NAMES utf8mb4;
-
-CREATE DATABASE IF NOT EXISTS teaching_manager
-  DEFAULT CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-USE teaching_manager;
-
-DROP TABLE IF EXISTS courses_students;
-DROP TABLE IF EXISTS course_application;
-DROP TABLE IF EXISTS course;
-DROP TABLE IF EXISTS course_switch;
-DROP TABLE IF EXISTS course_status;
-DROP TABLE IF EXISTS place;
-DROP TABLE IF EXISTS teacher;
-DROP TABLE IF EXISTS student;
-DROP TABLE IF EXISTS administrator;
-DROP TABLE IF EXISTS department;
-DROP TABLE IF EXISTS operation;
-DROP TABLE IF EXISTS course_examination;
-
-CREATE TABLE department (
+CREATE TABLE IF NOT EXISTS department (
   department_id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(64) NOT NULL
+  name VARCHAR(64) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE administrator (
+CREATE TABLE IF NOT EXISTS administrator (
   administrator_id INT PRIMARY KEY AUTO_INCREMENT,
   account VARCHAR(64) NOT NULL UNIQUE,
   password VARCHAR(128) NOT NULL,
@@ -34,7 +13,7 @@ CREATE TABLE administrator (
   date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE teacher (
+CREATE TABLE IF NOT EXISTS teacher (
   teacher_id INT PRIMARY KEY AUTO_INCREMENT,
   teacher_number VARCHAR(32) NOT NULL UNIQUE,
   name VARCHAR(64) NOT NULL,
@@ -44,7 +23,7 @@ CREATE TABLE teacher (
   CONSTRAINT fk_teacher_department FOREIGN KEY (department_id) REFERENCES department(department_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE student (
+CREATE TABLE IF NOT EXISTS student (
   student_id INT PRIMARY KEY AUTO_INCREMENT,
   student_number VARCHAR(32) NOT NULL UNIQUE,
   name VARCHAR(64) NOT NULL,
@@ -53,22 +32,22 @@ CREATE TABLE student (
   date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE place (
+CREATE TABLE IF NOT EXISTS place (
   place_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE course_status (
+CREATE TABLE IF NOT EXISTS course_status (
   course_status_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(64) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE course_switch (
+CREATE TABLE IF NOT EXISTS course_switch (
   course_switch_id INT PRIMARY KEY,
   status CHAR(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE course (
+CREATE TABLE IF NOT EXISTS course (
   course_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(128) NOT NULL,
   teacher_id INT,
@@ -87,7 +66,7 @@ CREATE TABLE course (
   CONSTRAINT fk_course_status FOREIGN KEY (course_status_id) REFERENCES course_status(course_status_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE courses_students (
+CREATE TABLE IF NOT EXISTS courses_students (
   courses_students_id INT PRIMARY KEY AUTO_INCREMENT,
   course_id INT NOT NULL,
   student_id INT NOT NULL,
@@ -98,17 +77,17 @@ CREATE TABLE courses_students (
   CONSTRAINT fk_cs_student FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE operation (
+CREATE TABLE IF NOT EXISTS operation (
   operation_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE course_examination (
+CREATE TABLE IF NOT EXISTS course_examination (
   course_examination_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE course_application (
+CREATE TABLE IF NOT EXISTS course_application (
   course_application_id INT PRIMARY KEY AUTO_INCREMENT,
   teacher_id INT NOT NULL,
   course_id INT NULL,
@@ -128,69 +107,46 @@ CREATE TABLE course_application (
   CONSTRAINT fk_ca_examination FOREIGN KEY (course_examination_id) REFERENCES course_examination(course_examination_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO department (name) VALUES
-  ('计算机学院'),
-  ('数学学院'),
-  ('外国语学院'),
-  ('经济管理学院');
+INSERT IGNORE INTO department (department_id, name) VALUES
+  (1, '计算机学院'),
+  (2, '数学学院'),
+  (3, '外国语学院'),
+  (4, '经济管理学院');
 
-INSERT INTO administrator (account, password, name) VALUES
-  ('admin', '123456', '系统管理员');
+INSERT IGNORE INTO administrator (administrator_id, account, password, name) VALUES
+  (1, 'admin', '123456', '系统管理员');
 
-INSERT INTO teacher (teacher_number, name, department_id, password) VALUES
-  ('T1001', '张老师', 1, '123456'),
-  ('T1002', '李老师', 2, '123456'),
-  ('T1003', '王老师', 4, '123456');
+INSERT IGNORE INTO teacher (teacher_id, teacher_number, name, department_id, password) VALUES
+  (1, 'T1001', '张老师', 1, '123456'),
+  (2, 'T1002', '李老师', 2, '123456'),
+  (3, 'T1003', '王老师', 4, '123456');
 
-INSERT INTO student (student_number, name, student_class, password) VALUES
-  ('S2025001', '赵同学', '计科 2401', '123456'),
-  ('S2025002', '钱同学', '计科 2402', '123456'),
-  ('S2025003', '孙同学', '经管 2401', '123456');
+INSERT IGNORE INTO student (student_id, student_number, name, student_class, password) VALUES
+  (1, 'S2025001', '赵同学', '计科 2401', '123456'),
+  (2, 'S2025002', '钱同学', '计科 2402', '123456'),
+  (3, 'S2025003', '孙同学', '经管 2401', '123456');
 
-INSERT INTO place (name) VALUES
-  ('A101'),
-  ('B204'),
-  ('线上课堂');
+INSERT IGNORE INTO place (place_id, name) VALUES
+  (1, 'A101'),
+  (2, 'B204'),
+  (3, '线上课堂');
 
-INSERT INTO course_status (name) VALUES
-  ('待选'),
-  ('可选'),
-  ('授课中'),
-  ('结束'),
-  ('等待课程安排');
+INSERT IGNORE INTO course_status (course_status_id, name) VALUES
+  (1, '待选'),
+  (2, '可选'),
+  (3, '授课中'),
+  (4, '结束'),
+  (5, '等待课程安排');
 
-INSERT INTO course_switch (course_switch_id, status) VALUES
+INSERT IGNORE INTO course_switch (course_switch_id, status) VALUES
   (1, '1');
 
-INSERT INTO operation (name) VALUES
-  ('新增'),
-  ('修改'),
-  ('删除');
+INSERT IGNORE INTO operation (operation_id, name) VALUES
+  (1, '新增'),
+  (2, '修改'),
+  (3, '删除');
 
-INSERT INTO course_examination (name) VALUES
-  ('待审批'),
-  ('通过'),
-  ('未通过');
-
-INSERT INTO course (name, teacher_id, credit, hour, time, place_id, description, course_status_id) VALUES
-  ('Java 程序设计', 1, '3', '48', '周一 1-2 节', 1, '面向对象与工程实践', 1),
-  ('高等数学', 2, '4', '64', '周三 3-4 节', 2, '微积分与线性代数基础', 2),
-  ('管理学导论', 3, '2', '32', '周五 1-2 节', 3, '组织与管理核心理论', 1);
-
-INSERT INTO courses_students (course_id, student_id, score) VALUES
-  (1, 1, 88),
-  (2, 1, NULL),
-  (2, 2, NULL);
-
-UPDATE course c
-SET c.current_students = (
-  SELECT COUNT(*)
-  FROM courses_students cs
-  WHERE cs.course_id = c.course_id
-);
-
-INSERT INTO course_application
-(teacher_id, course_name, course_credit, course_hour, course_time, course_place_id, course_description, operation_id, course_examination_id)
-VALUES
-  (1, 'Web 前端工程', '3', '48', '周四 1-2 节', 1, '涵盖 Vue 与工程化实践', 1, 1),
-  (2, '概率统计', '3', '48', '周二 5-6 节', 2, '概率分布与统计推断', 1, 2);
+INSERT IGNORE INTO course_examination (course_examination_id, name) VALUES
+  (1, '待审批'),
+  (2, '通过'),
+  (3, '未通过');

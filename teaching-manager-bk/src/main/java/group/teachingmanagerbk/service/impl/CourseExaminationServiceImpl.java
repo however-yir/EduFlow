@@ -1,6 +1,7 @@
 package group.teachingmanagerbk.service.impl;
 
 import group.teachingmanagerbk.dto.application.CourseApplication;
+import group.teachingmanagerbk.exception.BusinessException;
 import group.teachingmanagerbk.mapper.CourseExaminationMapper;
 import group.teachingmanagerbk.mapper.CourseMapper;
 import group.teachingmanagerbk.service.CourseExaminationService;
@@ -31,7 +32,7 @@ public class CourseExaminationServiceImpl  implements CourseExaminationService {
     }
 
     @Override
-    public void examineACourse(CourseApplication json) throws Exception {
+    public void examineACourse(CourseApplication json) {
         //首先判断通过还是不通过
         String courseExaminationName = json.getCourseExaminationName();
         String courseApplicationId = json.getCourseApplicationId();
@@ -43,7 +44,7 @@ public class CourseExaminationServiceImpl  implements CourseExaminationService {
         }
         //判断是否是合法的检查名称
         if (courseExaminationId == null) {
-            throw new Exception("查询检查状态id错误，请检查前端传过来的检查名称是否正确！");
+            throw new BusinessException(400, "查询检查状态id错误，请检查前端传过来的检查名称是否正确！");
         }
         //接下来是通过之后的操作
         String operationName = json.getOperationName();
@@ -64,12 +65,12 @@ public class CourseExaminationServiceImpl  implements CourseExaminationService {
     }
 
     //根据申请构建一个新的课程信息
-    private Course buildANewCourseInfo(CourseApplication courseApplication) throws Exception {
+    private Course buildANewCourseInfo(CourseApplication courseApplication) {
         Course course = new Course();
         //根据名称获取课程状态id
         String courseStatusId = courseMapper.getCourseStatusIdByName("等待课程安排");
         if (courseStatusId == null) {
-            throw new Exception("后端错误：所确定的课程状态在数据库中不存在，后端请修改！");
+            throw new BusinessException(500, "后端错误：所确定的课程状态在数据库中不存在，后端请修改！");
         }
         buildCommonData(course, courseApplication);
         course.setCourseStatusId(courseStatusId);

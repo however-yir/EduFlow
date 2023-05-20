@@ -3,6 +3,7 @@ package group.teachingmanagerbk.interceptor;
 import com.alibaba.fastjson.JSONObject;
 import group.teachingmanagerbk.utils.JwtUtil;
 import group.teachingmanagerbk.utils.ReturnResult.Result;
+import group.teachingmanagerbk.security.UserContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @CrossOrigin
@@ -36,11 +38,15 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             promptNotLogin(response);
             return false;
         }
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
+        }
 
         //相应的身份只能访问相应的接口，不能说登录成功了就将接口全部暴露给用户了（待实现）
 
         try {
-            JwtUtil.parseJWT(jwt);
+            Map<String, Object> claims = JwtUtil.parseJWT(jwt);
+            UserContextHolder.setClaims(claims);
         } catch (Exception e) {
             log.info("jwt令牌解析失败");
             promptNotLogin(response);
@@ -52,7 +58,14 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
     private void promptNotLogin(HttpServletResponse response) throws IOException {
         Result result = new Result().error("NOT_LOGIN");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(JSONObject.toJSONString(result));
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        UserContextHolder.clear();
     }
 
 }

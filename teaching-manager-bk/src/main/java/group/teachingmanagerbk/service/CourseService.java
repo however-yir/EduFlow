@@ -34,7 +34,7 @@ public interface CourseService {
      * 插入一条课程数据
      * @throws Exception 异常
      */
-    void insertANewCourse(Course json) throws Exception;
+    void insertANewCourse(Course json);
 
     /**
      * 更新课程信息
@@ -58,13 +58,13 @@ public interface CourseService {
      * 批量更新课程的状态
      * @param courseSwitchStatus 课程状态
      */
-    void updateCourseStatus(String courseSwitchStatus) throws Exception;
+    void updateCourseStatus(String courseSwitchStatus);
 
     /**
      * 学生选择一门课程
      * @param json 学生选课的数据
      */
-    void studentSelectCourse(StudentSelectCourseData json) throws Exception;
+    void studentSelectCourse(StudentSelectCourseData json);
 
     /**
      * 判断用户是否选择了某一课程
@@ -77,7 +77,7 @@ public interface CourseService {
      * 退选某一课程
      * @param json 选课数据
      */
-    void exitCourse(StudentSelectCourseData json) throws Exception;
+    void exitCourse(StudentSelectCourseData json);
 
     /**
      * 根据学生id查询

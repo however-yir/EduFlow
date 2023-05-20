@@ -201,6 +201,7 @@ npm run dev
 - 2D 架构升级说明见 [docs/architecture-upgrade-guide.md](docs/architecture-upgrade-guide.md)
 - 开发环境模板见 [.env.example](.env.example)
 - 本地数据库快速启动见 [docker-compose.dev.yml](docker-compose.dev.yml)
+- RBAC 架构演进 SQL 草案见 [db/rbac-upgrade-schema.sql](db/rbac-upgrade-schema.sql)
 - CI 配置见 [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
 本轮已落地：
