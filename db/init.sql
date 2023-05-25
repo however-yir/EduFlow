@@ -194,3 +194,48 @@ INSERT INTO course_application
 VALUES
   (1, 'Web 前端工程', '3', '48', '周四 1-2 节', 1, '涵盖 Vue 与工程化实践', 1, 1),
   (2, '概率统计', '3', '48', '周二 5-6 节', 2, '概率分布与统计推断', 1, 2);
+
+-- ------------------------------------------
+-- 选课冲突处理演示数据（重点）
+-- ------------------------------------------
+-- 说明：
+-- 1) uk_course_student：防止同一学生重复选同一课程
+-- 2) max_students/current_students：配合服务层容量校验
+-- 3) version：支持乐观锁 CAS 更新
+INSERT INTO course (name, teacher_id, credit, hour, time, place_id, description, course_status_id, max_students, current_students, version)
+VALUES ('并发系统专题（冲突演示）', 1, '2', '32', '周二 1-2 节', 1, '用于演示重复选课与人数上限冲突', 2, 1, 0, 0);
+
+SET @conflict_course_id = LAST_INSERT_ID();
+INSERT INTO courses_students (course_id, student_id, score) VALUES (@conflict_course_id, 3, NULL);
+UPDATE course SET current_students = 1 WHERE course_id = @conflict_course_id;
+
+-- ------------------------------------------
+-- 演示 A：重复选课冲突（唯一约束）
+-- ------------------------------------------
+-- INSERT INTO courses_students (course_id, student_id, score)
+-- VALUES (@conflict_course_id, 3, NULL);
+-- 预期：Duplicate entry ... for key 'uk_course_student'
+
+-- ------------------------------------------
+-- 演示 B：人数上限冲突（乐观锁 CAS）
+-- ------------------------------------------
+-- SELECT course_id, max_students, current_students, version
+-- FROM course WHERE course_id = @conflict_course_id;
+-- UPDATE course
+-- SET current_students = current_students + 1, version = version + 1
+-- WHERE course_id = @conflict_course_id
+--   AND version = 0
+--   AND current_students < max_students;
+-- 预期：受影响行数为 0（课程已满）
+
+-- ------------------------------------------
+-- 演示 C：并发悲观锁（双会话）
+-- ------------------------------------------
+-- 会话A:
+-- START TRANSACTION;
+-- SELECT * FROM course WHERE course_id = @conflict_course_id FOR UPDATE;
+--
+-- 会话B:
+-- START TRANSACTION;
+-- SELECT * FROM course WHERE course_id = @conflict_course_id FOR UPDATE;
+-- -- 预期：会话B阻塞，直到会话A COMMIT/ROLLBACK
