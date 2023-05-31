@@ -31,6 +31,13 @@ ensure_env() {
   fi
 }
 
+load_env() {
+  set -a
+  # shellcheck disable=SC1090
+  source "${ENV_FILE}"
+  set +a
+}
+
 compose() {
   docker compose --env-file "${ENV_FILE}" -f "${ROOT_DIR}/docker-compose.dev.yml" "$@"
 }
@@ -51,12 +58,14 @@ case "${cmd}" in
     ;;
   backend)
     ensure_env
+    load_env
     cd "${BACKEND_DIR}"
     mvn spring-boot:run
     ;;
   all)
     ensure_env
     compose up -d
+    load_env
     cd "${BACKEND_DIR}"
     mvn spring-boot:run
     ;;

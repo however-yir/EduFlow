@@ -117,7 +117,8 @@ npm run dev
 
 - `/login`、`/check/login` 默认放行
 - 其他接口走登录拦截，需在 `Authorization` 头中携带 JWT
-- JWT 密钥定义在 [JwtUtil.java](teaching-manager-bk/src/main/java/group/teachingmanagerbk/utils/JwtUtil.java)
+- JWT 密钥通过环境变量 `TM_JWT_SECRET` 注入（建议长度 ≥ 32）
+- 支持可选的 `TM_JWT_PREVIOUS_SECRET` 用于密钥轮换过渡期验签
 
 ## 7. 关键接口（示例）
 
@@ -197,6 +198,7 @@ npm run dev
 ## 13. 简历改造清单
 
 - 改造追踪见 [docs/resume-upgrade-checklist.md](docs/resume-upgrade-checklist.md)
+- 2D 架构升级说明见 [docs/architecture-upgrade-guide.md](docs/architecture-upgrade-guide.md)
 - 开发环境模板见 [.env.example](.env.example)
 - 本地数据库快速启动见 [docker-compose.dev.yml](docker-compose.dev.yml)
 - CI 配置见 [.github/workflows/ci.yml](.github/workflows/ci.yml)
@@ -209,3 +211,8 @@ npm run dev
 - Vue3 前端工作台（管理员/教师/学生）
 - 课程审核与成绩录入前端页面
 - 数据库初始化脚本与演示数据
+- 全局异常处理（ControllerAdvice）与业务异常体系
+- RBAC 权限注解（@RequirePermission）与切面校验
+- SpringDoc OpenAPI 文档接入（`/swagger-ui.html`）
+- Flyway 迁移脚本与迁移配置
+- 选课并发策略（悲观锁/乐观锁）可配置切换
