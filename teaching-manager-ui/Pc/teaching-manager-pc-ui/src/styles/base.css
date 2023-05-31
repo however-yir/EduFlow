@@ -1,0 +1,90 @@
+:root {
+  --bg-page: #f5f7fb;
+  --bg-card: #ffffff;
+  --text-main: #1f2937;
+  --text-subtle: #6b7280;
+  --brand: #155eef;
+  --success: #12b76a;
+  --danger: #f04438;
+  --border: #e4e7ec;
+  --radius: 12px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: linear-gradient(180deg, #f4f8ff 0%, #f9fbff 42%, #f6f7fb 100%);
+  color: var(--text-main);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-section {
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  padding: 18px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.page-subtitle {
+  margin: 8px 0 0;
+  color: var(--text-subtle);
+  font-size: 13px;
+}
+
+.page-toolbar {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.page-table {
+  margin-top: 10px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 16px;
+}
+
+.stat-card .label {
+  color: var(--text-subtle);
+  font-size: 13px;
+}
+
+.stat-card .value {
+  margin-top: 8px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .page-section {
+    padding: 14px;
+  }
+}

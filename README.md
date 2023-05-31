@@ -1,20 +1,21 @@
 # EduFlow
 
-🔥 A Spring Boot teaching management backend based on MyBatis, MySQL, and JWT authentication.  
+🔥 A teaching management system based on Spring Boot + Vue3 + MySQL.  
 🚀 Built for course management, member administration, enrollment workflows, and approval processes.  
-⭐ Supports login interception, course selection, withdrawal, auditing, and education data operations.
+⭐ Supports multi-role login, member/course CRUD, course enrollment, application/examination flow, and score management.
 
-> 面向教务场景的课程与成员管理系统后端项目，基于 Spring Boot + MyBatis + MySQL 实现，包含登录鉴权（JWT）、课程管理、选课流程与审核流程等核心能力。
+> 面向教务场景的课程与成员管理系统，包含前后端完整工程：后端负责鉴权与业务流程，前端提供管理员/教师/学生三类角色工作台。
 
 ## 1. 项目定位
 
-`EduFlow` 用于教学管理业务的后端支撑，当前仓库以后端为主：
+`EduFlow` 用于教学管理业务的完整支撑：
 
 - 后端代码位于 `teaching-manager-bk`
-- 前端目录 `teaching-manager-ui/Pc/teaching-manager-pc-ui` 当前仅保留目录骨架（未包含完整前端源码）
+- 前端代码位于 `teaching-manager-ui/Pc/teaching-manager-pc-ui`
 
-## 2. 已实现能力（后端）
+## 2. 已实现能力（前后端）
 
+后端能力：
 - 登录与登录校验（JWT）
 - 用户密码修改
 - 教师/学生/院系信息管理
@@ -22,6 +23,12 @@
 - 学生选课、退课、已选课程查询
 - 课程申请与课程审核流程
 - CORS 与登录拦截器
+
+前端能力：
+- 管理员端：教师管理、学生管理、课程管理、课程审核
+- 教师端：我的课程、课程申请、申请记录
+- 学生端：选课中心、已选课程、退课
+- 公共能力：登录鉴权、角色路由守卫、密码修改、统一请求封装
 
 ## 3. 技术栈
 
@@ -31,6 +38,8 @@
 - MySQL 8.x
 - JWT（`io.jsonwebtoken`）
 - Lombok / Fastjson
+- Vue3 + Vite
+- Element Plus + Pinia + Vue Router
 
 ## 4. 项目结构
 
@@ -44,10 +53,14 @@ EduFlow
 │   │   ├── interceptor/                        # 登录拦截器
 │   │   └── utils/                              # JWT 与统一返回结构
 │   └── src/main/resources/application.properties
-└── teaching-manager-ui/Pc/teaching-manager-pc-ui  # 前端目录占位
+└── teaching-manager-ui/Pc/teaching-manager-pc-ui  # Vue3 前端
+    ├── src/views/                                 # 管理员/教师/学生页面
+    ├── src/api/                                   # 接口封装
+    ├── src/router/                                # 角色路由与守卫
+    └── src/stores/                                # 登录态管理
 ```
 
-## 5. 本地启动（后端）
+## 5. 本地启动（后端 + 前端）
 
 ### 5.1 环境
 
@@ -86,6 +99,19 @@ cp .env.example .env
   - `DB_USERNAME`
   - `DB_PASSWORD`
 - 默认数据库名为 `teaching_manager`。
+- `db/init.sql` 已包含完整建表与演示数据，可直接用于本地联调。
+
+### 5.5 启动前端
+
+```bash
+cd teaching-manager-ui/Pc/teaching-manager-pc-ui
+cp .env.example .env
+npm install
+npm run dev
+```
+
+- 默认开发端口：`5174`
+- 已配置代理：`/api -> http://127.0.0.1:8080`
 
 ## 6. 鉴权机制说明
 
@@ -104,8 +130,8 @@ cp .env.example .env
 
 ## 8. 当前仓库状态
 
-- 后端代码完整度高，可直接作为 API 项目运行
-- 前端目录目前为空壳结构，建议补齐前端工程后联调
+- 后端与前端均可运行，支持完整教务流程演示
+- 数据库初始化脚本已内置演示数据，适合本地快速联调
 
 ## 9. 开发建议
 
@@ -115,16 +141,17 @@ cp .env.example .env
 
 ## 10. 设计与实现思路
 
-`EduFlow` 的实现重点放在“教务流程后端化”而不是页面展示上，整体采用“先公共能力、后业务流程”的推进顺序：
+`EduFlow` 的实现遵循“先公共能力、后业务流程、再前后端闭环”的推进顺序：
 
 1. 先完成登录、JWT 鉴权和拦截器，明确接口访问边界；
 2. 再完成教师、学生、院系、课程等基础数据模块；
-3. 最后补选课、退课、课程申请和审核等流程型接口，让系统具备完整的教务业务闭环。
+3. 完成选课、退课、课程申请、审批与成绩录入等流程型接口；
+4. 补齐 Vue3 前端工作台，形成管理员/教师/学生角色闭环。
 
 这种分阶段方式有两个直接好处：
 
 - 公共能力先稳定，后续业务扩展时改动范围更可控；
-- 即使前端尚未补齐，后端接口也已经具备独立联调和验证条件。
+- 前后端职责清晰，联调时能快速定位问题归属并迭代。
 
 ## 11. 关键难点与优化方向
 
@@ -134,7 +161,7 @@ cp .env.example .env
 
 - 登录态、接口权限和业务角色要保持统一；
 - 课程管理、选课和审核流程之间要有清晰边界；
-- 后端接口设计既要方便当前验证，也要为后续前端接入保留稳定结构。
+- 后端接口与前端页面要保持字段契约一致，减少联调摩擦。
 
 ### 11.2 当前处理方式
 
@@ -152,14 +179,14 @@ cp .env.example .env
 - 增加数据库初始化脚本与迁移工具，降低部署和接手成本；
 - 增加更细粒度的角色权限控制，而不是只依赖“已登录”判断；
 - 补统一异常处理、接口文档和测试用例，提升工程完整度；
-- 补齐前端工程，形成完整的课程管理演示闭环。
+- 增强前端 E2E 测试与页面级错误边界处理能力。
 
 ## 12.1 贡献建议
 
 欢迎通过 Issue / PR 提交：
 
 - SQL 初始化脚本与演示数据
-- 前端工程补齐与联调说明
+- 前端页面体验与联调说明优化
 - 鉴权与权限粒度优化
 - 自动化测试与 CI 配置
 
@@ -179,3 +206,6 @@ cp .env.example .env
 - 选课状态限制（仅可选/待选）
 - 选课时间冲突校验
 - 两条核心规则的单元测试
+- Vue3 前端工作台（管理员/教师/学生）
+- 课程审核与成绩录入前端页面
+- 数据库初始化脚本与演示数据
