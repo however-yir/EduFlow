@@ -1,59 +1,110 @@
-# EduFlow | 教务管理系统
+# EduFlow
 
-EduFlow 是一款基于 Spring Boot 开发的教务管理系统，旨在为高校或教育机构提供简洁高效的教务信息管理解决方案。系统涵盖课程管理、教师信息管理、学生选课、成绩录入等核心功能，助力数字化教务管理流程。
+> 面向教务场景的课程与成员管理系统后端项目，基于 Spring Boot + MyBatis + MySQL 实现，包含登录鉴权（JWT）、课程管理、选课流程与审核流程等核心能力。
 
-## ✨ 项目特点
+## 1. 项目定位
 
-- 基于 Spring Boot 构建，结构清晰，易于扩展
-- 支持学生/教师/管理员三角色权限控制
-- 提供课程管理、选课管理、成绩管理等模块
-- 前后端分离，界面简洁美观（可集成 Vue）
-- 使用 MySQL 数据库，支持主流部署环境
+`EduFlow` 用于教学管理业务的后端支撑，当前仓库以后端为主：
 
-## 🏗️ 技术栈
+- 后端代码位于 `teaching-manager-bk`
+- 前端目录 `teaching-manager-ui/Pc/teaching-manager-pc-ui` 当前仅保留目录骨架（未包含完整前端源码）
 
-- **后端框架**：Spring Boot 3.x  
-- **持久层框架**：MyBatis 3.x  
-- **数据库**：MySQL 8.x  
-- **项目管理**：Maven 4.x  
-- **前端建议**：Vue.js + Element UI（可选）
+## 2. 已实现能力（后端）
 
-## 📁 项目结构
+- 登录与登录校验（JWT）
+- 用户密码修改
+- 教师/学生/院系信息管理
+- 课程管理（新增、更新、删除、状态切换）
+- 学生选课、退课、已选课程查询
+- 课程申请与课程审核流程
+- CORS 与登录拦截器
 
+## 3. 技术栈
+
+- Java 17
+- Spring Boot 3.1.5
+- MyBatis 3.x
+- MySQL 8.x
+- JWT（`io.jsonwebtoken`）
+- Lombok / Fastjson
+
+## 4. 项目结构
+
+```text
 EduFlow
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com.eduflow
-│   │   │       ├── controller
-│   │   │       ├── service
-│   │   │       ├── mapper
-│   │   │       ├── entity
-│   │   │       └── EduFlowApplication.java
-│   │   └── resources
-│   │       ├── application.yml
-│   │       └── mapper/*.xml
-└── pom.xml
+├── teaching-manager-bk/                        # Spring Boot 后端
+│   ├── src/main/java/group/teachingmanagerbk
+│   │   ├── controller/                         # Login/Course/Member/... 控制器
+│   │   ├── service/                            # 业务服务层
+│   │   ├── mapper/                             # MyBatis Mapper
+│   │   ├── interceptor/                        # 登录拦截器
+│   │   └── utils/                              # JWT 与统一返回结构
+│   └── src/main/resources/application.properties
+└── teaching-manager-ui/Pc/teaching-manager-pc-ui  # 前端目录占位
+```
 
-## ⚙️ 功能模块
+## 5. 本地启动（后端）
 
-- [x] 教师信息管理  
-- [x] 学生信息管理  
-- [x] 课程信息管理  
-- [x] 学生选课管理  
-- [x] 成绩录入与查询  
-- [x] 角色权限控制（管理员/教师/学生）
+### 5.1 环境
 
-## 🚀 快速开始
+- JDK 17
+- Maven 3.8+
+- MySQL 8.x
 
-1. 克隆项目到本地：
-   ```bash
-   git clone https://github.com/your-username/EduFlow.git
+### 5.2 数据库配置
 
-	2.	导入 IDEA，配置 MySQL 数据源，初始化数据库
-	3.	启动 EduFlowApplication.java
-	4.	登录默认账户（配置文件中可设置）
+在 [application.properties](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/teaching-manager-bk/src/main/resources/application.properties) 中配置：
 
-📄 许可证
+- `spring.datasource.url`
+- `spring.datasource.username`
+- `spring.datasource.password`
 
-本项目采用 MIT License 开源，欢迎使用与二次开发。
+默认数据库名为：`teaching-manager`。
+
+说明：仓库未附带 `.sql` 初始化文件，需按业务模型自行建表或补充迁移脚本。
+
+### 5.3 运行
+
+```bash
+cd teaching-manager-bk
+mvn spring-boot:run
+```
+
+## 6. 鉴权机制说明
+
+- `/login`、`/check/login` 默认放行
+- 其他接口走登录拦截，需在 `Authorization` 头中携带 JWT
+- JWT 密钥定义在 [JwtUtil.java](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/teaching-manager-bk/src/main/java/group/teachingmanagerbk/utils/JwtUtil.java)
+
+## 7. 关键接口（示例）
+
+- 登录：`POST /login`
+- 成员管理：`/teachers`、`/students`、`/departments`
+- 课程管理：`/insert/course`、`/update/course`、`/delete/course`
+- 选课流程：`/student/select/course`、`/exit/course`
+- 课程申请：`/apply/add/course`、`/all/application`
+- 审核流程：`/wait/examination`、`/course/examination`
+
+## 8. 当前仓库状态
+
+- 后端代码完整度高，可直接作为 API 项目运行
+- 前端目录目前为空壳结构，建议补齐前端工程后联调
+
+## 9. 开发建议
+
+- 使用环境变量管理数据库与 JWT 配置
+- 增加 Flyway/Liquibase 管理数据库迁移
+- 增加统一异常处理与接口文档（OpenAPI）
+
+## 12.1 贡献建议
+
+欢迎通过 Issue / PR 提交：
+
+- SQL 初始化脚本与演示数据
+- 前端工程补齐与联调说明
+- 鉴权与权限粒度优化
+- 自动化测试与 CI 配置
+
+## 12.2 许可说明
+
+本仓库采用 MIT License，详见 [LICENSE](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/LICENSE)。
