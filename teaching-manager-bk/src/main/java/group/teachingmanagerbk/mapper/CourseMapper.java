@@ -64,7 +64,9 @@ public interface CourseMapper {
     void insertCoursesStudents(StudentSelectCourseData data);
 
     /* 根据课程id和学生id查询选课信息 */
-    @Select("select * from courses_students " +
+    @Select("select courses_students_id as coursesStudentsId, course_id as courseId, " +
+            "student_id as studentId, score " +
+            "from courses_students " +
             "where course_id = #{courseId} and student_id = #{studentId}")
     StudentSelectCourseData selectCoursesStudents(StudentSelectCourseData json);
 
