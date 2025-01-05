@@ -53,26 +53,39 @@ EduFlow
 
 - JDK 17
 - Maven 3.8+
-- MySQL 8.x
+- Docker（用于启动 MySQL）
 
-### 5.2 数据库配置
-
-在 [application.properties](teaching-manager-bk/src/main/resources/application.properties) 中配置：
-
-- `spring.datasource.url`
-- `spring.datasource.username`
-- `spring.datasource.password`
-
-默认数据库名为：`teaching-manager`。
-
-说明：仓库未附带 `.sql` 初始化文件，需按业务模型自行建表或补充迁移脚本。
-
-### 5.3 运行
+### 5.2 一键流程（推荐）
 
 ```bash
-cd teaching-manager-bk
-mvn spring-boot:run
+cp .env.example .env
+# 修改 .env 中 DB_PASSWORD / DB_ROOT_PASSWORD，不能保留 change_me_*
+
+./scripts/dev.sh check-env
+./scripts/dev.sh all
 ```
+
+`all` 会执行：
+
+1. 校验 `.env` 是否存在且不含占位口令；
+2. 通过 `docker-compose.dev.yml` 启动 MySQL；
+3. 启动后端 `teaching-manager-bk`。
+
+### 5.3 分步命令
+
+```bash
+./scripts/dev.sh infra-up
+./scripts/dev.sh backend
+./scripts/dev.sh infra-down
+```
+
+### 5.4 数据源说明
+
+- 后端从环境变量读取数据库配置，映射在 [application.properties](teaching-manager-bk/src/main/resources/application.properties)：
+  - `DB_URL`
+  - `DB_USERNAME`
+  - `DB_PASSWORD`
+- 默认数据库名为 `teaching_manager`。
 
 ## 6. 鉴权机制说明
 
