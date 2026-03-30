@@ -12,15 +12,20 @@ import org.apache.ibatis.annotations.Update;
 public interface LoginMapper {
 
     /* 查询需要登录的管理员信息 */
-    @Select("select * from administrator where account = #{account} and password = #{password}")
+    @Select("select administrator_id as administratorId, name " +
+            "from administrator where account = #{account} and password = #{password}")
     Administrator administratorLogin(String account, String password);
 
     /* 查询需要登录的学生信息 */
-    @Select("select * from student where student_number = #{account} and password = #{password}")
+    @Select("select student_id as studentId, student_number as studentNumber, name, " +
+            "student_class as studentClass, date_time as dateTime " +
+            "from student where student_number = #{account} and password = #{password}")
     Student studentLogin(String account, String password);
 
     /* 查询需要登录的教师信息 */
-    @Select("select * from teacher where teacher_number = #{account} and password = #{password}")
+    @Select("select teacher_id as teacherId, teacher_number as teacherNumber, name, " +
+            "department_id as departmentId, date_time as dateTime " +
+            "from teacher where teacher_number = #{account} and password = #{password}")
     Teacher teacherLogin(String account, String password);
 
     /* 更新管理员的密码 */
@@ -36,4 +41,3 @@ public interface LoginMapper {
     void updateTeacherPassword(ModifyPasswordParam data);
 
 }
-
