@@ -57,7 +57,7 @@ EduFlow
 
 ### 5.2 数据库配置
 
-在 [application.properties](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/teaching-manager-bk/src/main/resources/application.properties) 中配置：
+在 [application.properties](/Users/liuzhuoran/Documents/Playground/EduFlow/teaching-manager-bk/src/main/resources/application.properties) 中配置：
 
 - `spring.datasource.url`
 - `spring.datasource.username`
@@ -78,7 +78,7 @@ mvn spring-boot:run
 
 - `/login`、`/check/login` 默认放行
 - 其他接口走登录拦截，需在 `Authorization` 头中携带 JWT
-- JWT 密钥定义在 [JwtUtil.java](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/teaching-manager-bk/src/main/java/group/teachingmanagerbk/utils/JwtUtil.java)
+- JWT 密钥定义在 [JwtUtil.java](/Users/liuzhuoran/Documents/Playground/EduFlow/teaching-manager-bk/src/main/java/group/teachingmanagerbk/utils/JwtUtil.java)
 
 ## 7. 关键接口（示例）
 
@@ -152,4 +152,17 @@ mvn spring-boot:run
 
 ## 12.2 许可说明
 
-本仓库采用 MIT License，详见 [LICENSE](/Users/liuzhuoran/Documents/Playground/readme-batch/EduFlow/LICENSE)。
+本仓库采用 MIT License，详见 [LICENSE](/Users/liuzhuoran/Documents/Playground/EduFlow/LICENSE)。
+
+## 13. 简历改造清单
+
+- 改造追踪见 [docs/resume-upgrade-checklist.md](/Users/liuzhuoran/Documents/Playground/EduFlow/docs/resume-upgrade-checklist.md)
+- 开发环境模板见 [.env.example](/Users/liuzhuoran/Documents/Playground/EduFlow/.env.example)
+- 本地数据库快速启动见 [docker-compose.dev.yml](/Users/liuzhuoran/Documents/Playground/EduFlow/docker-compose.dev.yml)
+- CI 配置见 [.github/workflows/ci.yml](/Users/liuzhuoran/Documents/Playground/EduFlow/.github/workflows/ci.yml)
+
+本轮已落地：
+
+- 选课状态限制（仅可选/待选）
+- 选课时间冲突校验
+- 两条核心规则的单元测试

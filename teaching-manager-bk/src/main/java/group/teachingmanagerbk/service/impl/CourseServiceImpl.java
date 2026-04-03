@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -98,8 +99,14 @@ public class CourseServiceImpl implements CourseService {
         if (course == null) {
             throw new Exception("课程不存在！");
         }
+        if (!canSelectByStatus(course.getCourseStatusName())) {
+            throw new Exception("当前课程状态不允许选课！");
+        }
         if (this.judgeCourseSelectedStatus(json)) {
             throw new Exception("课程已经被该学生选择！");
+        }
+        if (hasTimeConflict(studentId, course.getTime())) {
+            throw new Exception("该课程与已选课程上课时间冲突！");
         }
         courseMapper.insertCoursesStudents(json);
     }
@@ -137,6 +144,29 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ArrayList<Course> getTeacherCourse(String teacherId) {
         return courseMapper.getTeacherCourse(teacherId);
+    }
+
+    private boolean canSelectByStatus(String courseStatusName) {
+        if (courseStatusName == null) {
+            return false;
+        }
+        return "可选".equals(courseStatusName) || "待选".equals(courseStatusName);
+    }
+
+    private boolean hasTimeConflict(String studentId, String targetTime) {
+        if (targetTime == null || targetTime.isBlank()) {
+            return false;
+        }
+        ArrayList<Course> selectedCourses = courseMapper.getCourseByStudentId(studentId);
+        if (selectedCourses == null || selectedCourses.isEmpty()) {
+            return false;
+        }
+        for (Course selectedCourse : selectedCourses) {
+            if (Objects.equals(targetTime, selectedCourse.getTime())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
