@@ -2,7 +2,10 @@
   <el-aside class="sidebar" :width="collapsed ? '72px' : '232px'">
     <div class="brand" @click="$router.push('/dashboard')">
       <span class="logo">E</span>
-      <span v-if="!collapsed" class="name">EduFlow</span>
+      <div v-if="!collapsed" class="brand-meta">
+        <span class="name">EduFlow</span>
+        <span class="tagline">Teaching Ops Hub</span>
+      </div>
     </div>
 
     <el-scrollbar>
@@ -23,6 +26,11 @@
         </el-menu-item>
       </el-menu>
     </el-scrollbar>
+
+    <div v-if="!collapsed" class="footer-note">
+      <p>Spring Boot + Vue3</p>
+      <span>教务流程在线协同</span>
+    </div>
   </el-aside>
 </template>
 
@@ -51,27 +59,29 @@ function onSelect(path) {
 
 <style scoped>
 .sidebar {
-  background: #0f172a;
+  background: linear-gradient(180deg, #061b3a 0%, #0b2850 45%, #0b3462 100%);
   color: #d0d6e3;
-  border-right: 1px solid #1e293b;
+  border-right: 1px solid #1f3d67;
   transition: width 0.25s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .brand {
-  height: 64px;
+  min-height: 74px;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 14px;
   cursor: pointer;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid rgba(132, 179, 239, 0.18);
 }
 
 .logo {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(145deg, #40b5ff, #0b6df4);
   color: #fff;
   font-weight: 700;
   display: inline-flex;
@@ -79,29 +89,59 @@ function onSelect(path) {
   justify-content: center;
 }
 
+.brand-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .name {
-  color: #f8fafc;
+  color: #eef6ff;
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.tagline {
+  color: #9ebfe3;
+  font-size: 11px;
 }
 
 .menu {
   border-right: none;
   background: transparent;
+  padding: 8px 0;
 }
 
 .menu :deep(.el-menu-item) {
-  color: #d0d6e3;
+  color: #d6e7fb;
   margin: 6px 8px;
   border-radius: 10px;
+  height: 42px;
 }
 
 .menu :deep(.el-menu-item.is-active) {
-  background: rgba(59, 130, 246, 0.24);
+  background: linear-gradient(90deg, rgba(55, 154, 255, 0.36), rgba(24, 129, 236, 0.22));
   color: #fff;
 }
 
 .menu :deep(.el-menu-item:hover) {
-  background: rgba(148, 163, 184, 0.12);
+  background: rgba(163, 196, 237, 0.18);
+}
+
+.footer-note {
+  margin-top: auto;
+  padding: 12px 14px 16px;
+  border-top: 1px solid rgba(132, 179, 239, 0.18);
+  color: #9ebfe3;
+}
+
+.footer-note p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.footer-note span {
+  font-size: 11px;
+  opacity: 0.9;
 }
 </style>

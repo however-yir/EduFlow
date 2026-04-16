@@ -1,8 +1,8 @@
-version: "3.9"
 services:
   mysql:
     image: mysql:8.0
     container_name: eduflow-mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change_me_root_password}
       MYSQL_DATABASE: teaching_manager

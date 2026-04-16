@@ -29,6 +29,24 @@ ensure_env() {
     echo "Detected placeholder secrets in ${ENV_FILE}. Please replace all change_me_* values."
     exit 1
   fi
+
+  # If using root as datasource user, DB password must match MySQL root password.
+  # This avoids a common local startup failure when DB_PASSWORD and DB_ROOT_PASSWORD differ.
+  # shellcheck disable=SC1090
+  source "${ENV_FILE}"
+  if [[ "${DB_USERNAME:-}" == "root" && "${DB_PASSWORD:-}" != "${DB_ROOT_PASSWORD:-}" ]]; then
+    echo "DB_USERNAME is root, but DB_PASSWORD != DB_ROOT_PASSWORD."
+    echo "Please align them or switch DB_USERNAME to a dedicated app user."
+    exit 1
+  fi
+}
+
+ensure_port_free() {
+  local port="${SERVER_PORT:-8081}"
+  if lsof -nP -iTCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "Port ${port} is already in use. Update SERVER_PORT in ${ENV_FILE} and retry."
+    exit 1
+  fi
 }
 
 load_env() {
@@ -59,6 +77,7 @@ case "${cmd}" in
   backend)
     ensure_env
     load_env
+    ensure_port_free
     cd "${BACKEND_DIR}"
     mvn spring-boot:run
     ;;
@@ -66,6 +85,7 @@ case "${cmd}" in
     ensure_env
     compose up -d
     load_env
+    ensure_port_free
     cd "${BACKEND_DIR}"
     mvn spring-boot:run
     ;;

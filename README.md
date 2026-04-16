@@ -72,7 +72,9 @@ EduFlow
 
 ```bash
 cp .env.example .env
-# 修改 .env 中 DB_PASSWORD / DB_ROOT_PASSWORD，不能保留 change_me_*
+# 修改 .env 中口令配置，不能保留 change_me_*
+# 若 DB_USERNAME=root，则 DB_PASSWORD 必须与 DB_ROOT_PASSWORD 一致
+# 可通过 SERVER_PORT 配置后端端口（默认 8081）
 
 ./scripts/dev.sh check-env
 ./scripts/dev.sh all
@@ -98,6 +100,7 @@ cp .env.example .env
   - `DB_URL`
   - `DB_USERNAME`
   - `DB_PASSWORD`
+- 后端端口通过 `SERVER_PORT` 控制，默认 `8081`。
 - 默认数据库名为 `teaching_manager`。
 - `db/init.sql` 已包含完整建表与演示数据，可直接用于本地联调。
 
@@ -111,7 +114,8 @@ npm run dev
 ```
 
 - 默认开发端口：`5174`
-- 已配置代理：`/api -> http://127.0.0.1:8080`
+- 默认代理：`/api -> http://127.0.0.1:8081`
+- 可通过前端 `.env` 的 `VITE_PROXY_TARGET` 调整代理后端地址
 
 ## 6. 鉴权机制说明
 

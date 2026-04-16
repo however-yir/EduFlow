@@ -6,7 +6,7 @@
       :collapsed="collapsed"
       @menu-select="handleMenuSelect"
     />
-    <el-container>
+    <el-container class="layout-main-shell">
       <AppHeader
         :title="headerTitle"
         :subtitle="headerSubtitle"
@@ -17,7 +17,9 @@
         @toggle-collapse="collapsed = !collapsed"
       />
       <el-main class="main-area">
-        <router-view />
+        <div class="main-inner">
+          <router-view />
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -67,10 +69,26 @@ async function handleLogout() {
 <style scoped>
 .layout-root {
   min-height: 100vh;
+  position: relative;
+}
+
+.layout-main-shell {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.54) 0%, rgba(245, 251, 255, 0.82) 100%);
 }
 
 .main-area {
-  padding: 16px;
+  padding: 20px;
   background: transparent;
+}
+
+.main-inner {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .main-area {
+    padding: 12px;
+  }
 }
 </style>

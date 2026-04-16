@@ -1,10 +1,11 @@
 <template>
   <header class="header">
     <div class="left">
-      <el-button text @click="$emit('toggle-collapse')">
+      <el-button class="collapse-btn" text @click="$emit('toggle-collapse')">
         <el-icon><Fold v-if="!collapsed" /><Expand v-else /></el-icon>
       </el-button>
       <div class="title-wrap">
+        <p class="eyebrow">EduFlow Workspace</p>
         <p class="title">{{ title }}</p>
         <p class="subtitle">{{ subtitle }}</p>
       </div>
@@ -59,13 +60,14 @@ defineEmits(["logout", "toggle-collapse"]);
 
 <style scoped>
 .header {
-  height: 64px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  min-height: 72px;
+  border-bottom: 1px solid #d7e4f4;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(248, 252, 255, 0.9));
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 18px;
+  padding: 10px 20px;
 }
 
 .left,
@@ -75,23 +77,57 @@ defineEmits(["logout", "toggle-collapse"]);
   gap: 12px;
 }
 
-.title-wrap .title {
+.collapse-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #eef5ff;
+}
+
+.title-wrap .eyebrow {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6f829b;
+}
+
+.title-wrap .title {
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .title-wrap .subtitle {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #6b7280;
+  color: #5f7085;
 }
 
 .dropdown-trigger {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #f2f8ff;
   cursor: pointer;
-  color: #334155;
+  color: #29466c;
+  transition: background 0.2s ease;
+}
+
+.dropdown-trigger:hover {
+  background: #e7f1ff;
+}
+
+@media (max-width: 900px) {
+  .header {
+    padding: 10px 12px;
+    min-height: 64px;
+  }
+
+  .title-wrap .subtitle {
+    display: none;
+  }
 }
 </style>
